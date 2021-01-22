@@ -130,4 +130,26 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.status).to eq(:money)
     end
   end
+
+  context '.answer_current_question!' do
+    it 'returns right answer' do
+      expect(game_w_questions.answer_current_question!('d')).to be_truthy
+    end
+
+    it 'returns wrong answer' do
+      expect(game_w_questions.answer_current_question!('a')).to be_falsey
+    end
+
+    it 'return false to right answer after timeout' do
+      game_w_questions.created_at = 1.hour.ago
+      expect(game_w_questions.answer_current_question!('d')).to be_falsey
+    end
+
+    it 'return true and prize when last answer right' do
+      game_w_questions.current_level = Question::QUESTION_LEVELS.max
+
+      expect(game_w_questions.answer_current_question!('d')).to be_truthy
+      expect(game_w_questions.prize).to eq(1000000)
+    end
+  end
 end
