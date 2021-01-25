@@ -115,6 +115,15 @@ RSpec.describe GamesController, type: :controller do
       expect(flash.empty?).to be_truthy # удачный ответ не заполняет flash
     end
 
+    it 'answers wrong' do
+      put :answer, id: game_w_questions.id, letter: !game_w_questions.current_game_question.correct_answer_key
+      game = assigns(:game)
+
+      expect(game.finished?).to be_truthy
+      expect(game.current_level).to be == 0
+      expect(response).to redirect_to(user_path(user))
+    end
+
     #----------- Вариант решения ДЗ ---------------------------------
 
     # проверка, что пользовтеля посылают из чужой игры
