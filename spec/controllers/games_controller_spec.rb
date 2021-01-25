@@ -18,10 +18,10 @@ RSpec.describe GamesController, type: :controller do
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
 
   # группа тестов для незалогиненного юзера (Анонимус)
-  describe 'Testing actions with anonym user' do
-    context 'action .show' do
+  describe '#show' do
+    context 'with anonym user' do
       # из экшена show анона посылаем
-      it 'kick from .show' do
+      it 'kick from action' do
         # вызываем экшен
         get :show, id: game_w_questions.id
         # проверяем ответ
@@ -30,9 +30,11 @@ RSpec.describe GamesController, type: :controller do
         expect(flash[:alert]).to be # во flash должен быть прописана ошибка
       end
     end
+  end
 
-    context 'action .create' do
-      it 'kick from .create' do
+  describe '#create' do
+    context 'with anonym user' do
+      it 'kick from action' do
         # вызываем экшен
         post :create
         # проверяем ответ
@@ -41,9 +43,11 @@ RSpec.describe GamesController, type: :controller do
         expect(flash[:alert]).to be # во flash должен быть прописана ошибка
       end
     end
+  end
 
-    context 'action .answer' do
-      it 'kick from .answer' do
+  describe '#answer' do
+    context 'with anonym user' do
+      it 'kick from action' do
         # вызываем экшен
         put :answer, id: game_w_questions.id
         # проверяем ответ
@@ -52,9 +56,11 @@ RSpec.describe GamesController, type: :controller do
         expect(flash[:alert]).to be # во flash должен быть прописана ошибка
       end
     end
+  end
 
-    context 'action .take_money' do
-      it 'kick from .take_money' do
+  describe '#take_money' do
+    context 'with anonym user' do
+      it 'kick from action' do
         # вызываем экшен
         put :take_money, id: game_w_questions.id
         # проверяем ответ
