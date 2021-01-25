@@ -131,38 +131,36 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  describe '.answer_current_question!' do
-    context 'testing question to right on to wrong answer' do
-      it 'when right' do
+  describe '#answer_current_question!' do
+    context 'when answer right' do
+      it 'answer not last' do
         expect(game_w_questions.answer_current_question!('d')).to be(true)
         expect(game_w_questions.finished?).to be(false)
         expect(game_w_questions.status).to eq(:in_progress)
       end
 
-      it 'when wrong' do
-        expect(game_w_questions.answer_current_question!('a')).to be(false)
-        expect(game_w_questions.finished?).to be(true)
-        expect(game_w_questions.status).to eq(:fail)
-      end
-    end
-
-    context 'return false to right answer after timeout' do
-      it do
+      it 'time is out' do
         game_w_questions.created_at = 1.hour.ago
         expect(game_w_questions.answer_current_question!('d')).to be(false)
         expect(game_w_questions.finished?).to be(true)
         expect(game_w_questions.status).to eq(:timeout)
       end
-    end
 
-    context 'return true and prize when last answer right' do
-      it do
+      it 'last answer' do
         game_w_questions.current_level = Question::QUESTION_LEVELS.max
 
         expect(game_w_questions.answer_current_question!('d')).to be(true)
         expect(game_w_questions.prize).to eq(1000000)
         expect(game_w_questions.finished?).to be(true)
         expect(game_w_questions.status).to eq(:won)
+      end
+    end
+
+    context 'when answer wrong' do
+      it 'answer not last' do
+        expect(game_w_questions.answer_current_question!('a')).to be(false)
+        expect(game_w_questions.finished?).to be(true)
+        expect(game_w_questions.status).to eq(:fail)
       end
     end
   end
