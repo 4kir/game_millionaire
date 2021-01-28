@@ -104,24 +104,28 @@ RSpec.describe GamesController, type: :controller do
     end
 
     # юзер отвечает на игру корректно - игра продолжается
-    it 'answers correct' do
-      # передаем параметр params[:letter]
-      put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
-      game = assigns(:game)
+    context 'and answers is correct' do
+      it 'returns false' do
+        # передаем параметр params[:letter]
+        put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
+        game = assigns(:game)
 
-      expect(game.finished?).to be_falsey
-      expect(game.current_level).to be > 0
-      expect(response).to redirect_to(game_path(game))
-      expect(flash.empty?).to be_truthy # удачный ответ не заполняет flash
+        expect(game.finished?).to be false
+        expect(game.current_level).to be > 0
+        expect(response).to redirect_to(game_path(game))
+        expect(flash.empty?).to be_truthy # удачный ответ не заполняет flash
+      end
     end
 
-    it 'answers wrong' do
-      put :answer, id: game_w_questions.id, letter: !game_w_questions.current_game_question.correct_answer_key
-      game = assigns(:game)
+    context 'and answer is wrong' do
+      it 'returns true' do
+        put :answer, id: game_w_questions.id, letter: 'c'
+        game = assigns(:game)
 
-      expect(game.finished?).to be_truthy
-      expect(game.current_level).to be == 0
-      expect(response).to redirect_to(user_path(user))
+        expect(game.finished?).to be true
+        expect(game.current_level).to be == 0
+        expect(response).to redirect_to(user_path(user))
+      end
     end
 
         #----------- Вариант решения ДЗ ---------------------------------
