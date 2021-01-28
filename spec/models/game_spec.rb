@@ -99,7 +99,6 @@ RSpec.describe Game, type: :model do
     end
   end
 
-
   #--------------- Вариант решения ДЗ --------------------
 
   # группа тестов на проверку статуса игры
@@ -132,35 +131,43 @@ RSpec.describe Game, type: :model do
   end
 
   describe '#answer_current_question!' do
-    context 'when answer right' do
-      it 'answer not last' do
-        expect(game_w_questions.answer_current_question!('d')).to be(true)
-        expect(game_w_questions.finished?).to be(false)
-        expect(game_w_questions.status).to eq(:in_progress)
+    context 'when answer is right' do
+      context 'and answer is not last' do
+        it 'returns true, game.finished? must be false and game status: in_progress' do
+          expect(game_w_questions.answer_current_question!('d')).to be(true)
+          expect(game_w_questions.finished?).to be(false)
+          expect(game_w_questions.status).to eq(:in_progress)
+        end
       end
 
-      it 'time is out' do
-        game_w_questions.created_at = 1.hour.ago
-        expect(game_w_questions.answer_current_question!('d')).to be(false)
-        expect(game_w_questions.finished?).to be(true)
-        expect(game_w_questions.status).to eq(:timeout)
+      context 'and time is out' do
+        it 'returns false, game.finished? must be true and game status: timeout' do
+          game_w_questions.created_at = 1.hour.ago
+          expect(game_w_questions.answer_current_question!('d')).to be(false)
+          expect(game_w_questions.finished?).to be(true)
+          expect(game_w_questions.status).to eq(:timeout)
+        end
       end
 
-      it 'last answer' do
-        game_w_questions.current_level = Question::QUESTION_LEVELS.max
+      context 'and answer is last ' do
+        it 'returns true, game.finished? must be true and game status: won' do
+          game_w_questions.current_level = Question::QUESTION_LEVELS.max
 
-        expect(game_w_questions.answer_current_question!('d')).to be(true)
-        expect(game_w_questions.prize).to eq(1000000)
-        expect(game_w_questions.finished?).to be(true)
-        expect(game_w_questions.status).to eq(:won)
+          expect(game_w_questions.answer_current_question!('d')).to be(true)
+          expect(game_w_questions.prize).to eq(1000000)
+          expect(game_w_questions.finished?).to be(true)
+          expect(game_w_questions.status).to eq(:won)
+        end
       end
     end
 
     context 'when answer wrong' do
-      it 'answer not last' do
-        expect(game_w_questions.answer_current_question!('a')).to be(false)
-        expect(game_w_questions.finished?).to be(true)
-        expect(game_w_questions.status).to eq(:fail)
+      context 'and answer is not last' do
+        it 'returns false, game.finished? must be true and game status: fail' do
+          expect(game_w_questions.answer_current_question!('a')).to be(false)
+          expect(game_w_questions.finished?).to be(true)
+          expect(game_w_questions.status).to eq(:fail)
+        end
       end
     end
   end
