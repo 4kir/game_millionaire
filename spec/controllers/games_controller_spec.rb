@@ -119,7 +119,9 @@ RSpec.describe GamesController, type: :controller do
 
     context 'and answer is wrong' do
       it 'returns true' do
-        put :answer, id: game_w_questions.id, letter: 'c'
+        current_game = game_w_questions.current_game_question
+        answers_keys = current_game.variants.keys - [current_game.correct_answer_key]
+        put :answer, id: game_w_questions.id, letter: answers_keys.sample
         game = assigns(:game)
 
         expect(game.finished?).to be true
