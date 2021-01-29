@@ -211,7 +211,8 @@ RSpec.describe GamesController, type: :controller do
       expect(game.finished?).to be_falsey
       expect(game.fifty_fifty_used).to be_truthy
       expect(game.current_game_question.help_hash[:fifty_fifty]).to be
-      expect(game.current_game_question.help_hash[:fifty_fifty]).to include('d')
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to include(game.current_game_question.correct_answer_key)
+      expect(game.current_game_question.help_hash[:fifty_fifty].count).to eq 2
       expect(response).to redirect_to(game_path(game))
     end
   end
